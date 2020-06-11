@@ -1,1 +1,69 @@
-<h1> Hello world </h1>
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Code Mustang | Rajat Bajpai</title>
+	<meta content="width=device-width, initial-scale=1" name="viewport" />
+	<link rel="stylesheet" type="text/css" href="css/main.css">
+	<link href="https://fonts.googleapis.com/css?family=Merriweather:300|Montserrat:500,600&display=swap" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="css/prism.css">
+</head>
+<body>
+	<nav class="nv_container">
+		<h1 class="tagline"><a href="http://codemustang.com">Code Mustang</a></h1>
+		<ul class="container">
+			<li><a href="#" class="nv_itm pg_sel">Home</a></li>
+			<li><a href="youtube.html" class="nv_itm">Youtube Videos</a></li>			
+			<li><a href="paintings.html" class="nv_itm">Digital Painting</a></li>
+			<li><a href="photographs.html" class="nv_itm">Photography</a></li>
+			<li><a href="music.html" class="nv_itm">Guitar</a></li>
+			<li><a href="about.html" class="nv_itm">About</a></li>
+		</ul>
+	</nav>
+
+	<main>
+		<article>
+			<h3 class="act_head">Read Copy Update (RCU) - A basic overview of a synchronization mechanism</h3>
+			<p class="act_cont">
+				We Homo sapiens have come a long way from the stone age to silicon age. One of the main reasons for our evolution to sophisticated beings is striving to do something better than earlier. In the 21st century term, it means being more productive.
+			</p>
+			<p class="act_cont">
+				Earlier, our lives mostly depended on physical tools and methods to do things. Nowadays, everything depends on computers and applications running on them. Therefore, our biggest quest in this century or maybe beyond is to optimize these applications.
+			</p>
+			<p class="act_cont">
+				In this quest, with the advancements in technology, we moved to multicore CPU architecture to parallel process the tasks. But, writing software for multicore architecture is complicated, one has to be a vigilant programmer, as shared data become convoluted quickly.
+			</p>
+			<p class="act_cont">
+				To enable modern software engineers to harness multicore architecture, we need some synchronization mechanism to work with shared resources concurrently. The traditional and rudimentary solution to this problem is to take locks (Mutex, Spinlock, or Futex). But, there is a better solution for a specific scenario of the reader-writer problem.
+			</p>
+			<p class="act_cont">
+				The reader-writer scenario where we have a single writer and multiple readers extensively accessing the shared resources. In this scenario, RCU offers benefits over traditional locks.
+			</p>
+			<p class="act_cont">
+				The Linux RCU offers basic Application Programming Interface (API) to use RCU. Let's go over some of them one by one.
+			</p>
+			<h4 class="list_item">1. rcu_assign_pointer</h4>
+			<p class="act_cont">
+				To safely communicate a value change to the reader, it assigns a pointer that is used by the updater. Other than that, it also executes any memory barrier instructions for a given CPU architecture.
+			</p>
+			<h4 class="list_item">2. rcu_dereference</h4>
+			<p class="act_cont">
+				The reader uses it inside the RCU read-critical region to read an RCU protected pointer, which gives a value that can be safely dereferenced later. Like assign_pointer, it also executes memory barriers for a given CPU architecture.
+			</p>
+			<h4 class="list_item">3. rcu_read_lock</h4>
+			<p class="act_cont">
+				The reader takes a read lock to inform the reclaimer that it is entering a critical section. And for that duration, any RCU protected data structure should not be reclaimed.
+			</p>
+			<h4 class="list_item">4. rcu_read_unlock</h4>
+			<p class="act_cont">
+				The reader issues read unlock to inform the reclaimer that the reader is exiting the RCU critical region. Alluding that it may reclaim RCU protected data structures.
+			</p>
+			<h4 class="list_item">5. synchronize_rcu</h4>
+			<p class="act_cont">
+				The writer uses synchronize_rcu just after the Updation code. In the writer, this divides the updater and reclaimer. It blocks the writer until all pre-existing RCU read-side critical sections on all the CPUs have completed. One important thing, which is generally missed is that synchronize_rcu will wait only for readers that are currently in the critical section and not for any subsequent RCU read critical sections. This also makes sense, given that any subsequent read-critical sections cannot hold a reference to the old data structure. Synchronize_rcu is the key ingredient of the RCU recipe, and to better understand it, we will discuss it in-depth in future posts.
+			</p>
+		</article>
+
+	</main>
+	<script type="text/javascript" src="js/prism.js"></script>
+</body>
+</html>
