@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tags on Rajat Bajpai</title>
+    <link>https://rajatbajpai.com/tags/</link>
+    <description>Recent content in Tags on Rajat Bajpai</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Sat, 07 Aug 2021 18:59:43 +0530</lastBuildDate><atom:link href="https://rajatbajpai.com/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>concurrency</title>
+      <link>https://rajatbajpai.com/tags/concurrency/</link>
+      <pubDate>Sat, 07 Aug 2021 18:59:43 +0530</pubDate>
+      
+      <guid>https://rajatbajpai.com/tags/concurrency/</guid>
+      
+      <description></description>
+      
+    </item>
+    
+    <item>
+      <title>data structures</title>
+      <link>https://rajatbajpai.com/tags/data-structures/</link>
+      <pubDate>Sat, 07 Aug 2021 18:59:43 +0530</pubDate>
+      
+      <guid>https://rajatbajpai.com/tags/data-structures/</guid>
+      
+      <description></description>
+      
+    </item>
+    
+    <item>
+      <title>linux</title>
+      <link>https://rajatbajpai.com/tags/linux/</link>
+      <pubDate>Sat, 07 Aug 2021 18:59:43 +0530</pubDate>
+      
+      <guid>https://rajatbajpai.com/tags/linux/</guid>
+      
+      <description></description>
+      
+    </item>
+    
+    <item>
+      <title>locks</title>
+      <link>https://rajatbajpai.com/tags/locks/</link>
+      <pubDate>Sat, 07 Aug 2021 18:59:43 +0530</pubDate>
+      
+      <guid>https://rajatbajpai.com/tags/locks/</guid>
+      
+      <description></description>
+      
+    </item>
+    
+    <item>
+      <title>multicore</title>
+      <link>https://rajatbajpai.com/tags/multicore/</link>
+      <pubDate>Sat, 07 Aug 2021 18:59:43 +0530</pubDate>
+      
+      <guid>https://rajatbajpai.com/tags/multicore/</guid>
+      
+      <description></description>
+      
+    </item>
+    
+    <item>
+      <title>rcu</title>
+      <link>https://rajatbajpai.com/tags/rcu/</link>
+      <pubDate>Sat, 07 Aug 2021 18:59:43 +0530</pubDate>
+      
+      <guid>https://rajatbajpai.com/tags/rcu/</guid>
+      
+      <description></description>
+      
+    </item>
+    
+    <item>
+      <title>index</title>
+      <link>https://rajatbajpai.com/tags/index/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://rajatbajpai.com/tags/index/</guid>
+      
+      <description></description>
+      
+    </item>
+    
+  </channel>
+</rss>
+

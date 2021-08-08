@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+
+<meta name="author" content="author">
+
+
+
+<meta name="description" content="An article to give basic overview of a synchronization mechanism">
+
+
+
+<link rel="icon" href="/favicon.ico">
+
+
+
+<meta name="keywords" content=" software engineer  personal blog  technical blog ">
+
+
+
+
+<script>
+  
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']],
+      processEscapes: true,
+      processEnvironments: true,
+    },
+    options: {
+      skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    }
+  };
+</script>
+
+<script async defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+
+
+
+
+<link rel="canonical" href="https://rajatbajpai.com/post/rcu/">
+
+
+
+
+<title>Read Copy Update - A basic overview of a synchronization mechanism - Rajat Bajpai</title>
+
+
+
+<link media="screen" rel="stylesheet" href='https://rajatbajpai.com/css/common.css'>
+<link media="screen" rel="stylesheet" href='https://rajatbajpai.com/css/content.css'>
+<link media="screen" rel="stylesheet" href='https://rajatbajpai.com/css/highlight.css'>
+
+
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Read Copy Update - A basic overview of a synchronization mechanism" />
+<meta name="twitter:description" content="We homo sapiens have come a long way from the stone age to silicon age. One of the main reasons for our evolution to sophisticated beings is striving to do something better than earlier. In the 21st century term, it means being more productive." />
+
+
+  <link rel="stylesheet" href='https://rajatbajpai.com/css/single.css'>
+</head>
+
+<body>
+  <div id="wrapper">
+    <header id="header">
+  <h1>
+    <a href="https://rajatbajpai.com">Rajat Bajpai</a>
+  </h1>
+
+  <nav>
+    
+    <span class="nav-bar-item">
+      <a class="link" href="/">Post</a>
+    </span>
+    
+    <span class="nav-bar-item">
+      <a class="link" href="/post/">Archives</a>
+    </span>
+    
+    <span class="nav-bar-item">
+      <a class="link" href="/about/">About</a>
+    </span>
+    
+  </nav>
+</header>
+
+    <main id="main" class="post">
+      
+      
+      
+      <h1>Read Copy Update - A basic overview of a synchronization mechanism</h1>
+      
+      <div>
+        <b>Keywords: </b>
+        
+        <a class="link" href='https://rajatbajpai.com/tags/linux'>#linux</a>
+        
+        <a class="link" href='https://rajatbajpai.com/tags/data-structures'>#data structures</a>
+        
+        <a class="link" href='https://rajatbajpai.com/tags/rcu'>#rcu</a>
+        
+        <a class="link" href='https://rajatbajpai.com/tags/concurrency'>#concurrency</a>
+        
+        <a class="link" href='https://rajatbajpai.com/tags/locks'>#locks</a>
+        
+        <a class="link" href='https://rajatbajpai.com/tags/multicore'>#multicore</a>
+        
+      </div>
+      
+      <div class="content">
+        
+        <p>We homo sapiens have come a long way from the stone age to silicon age. One of the main reasons for our evolution to sophisticated beings is striving to do something better than earlier. In the 21st century term, it means being more productive.</p>
+<p>Earlier, our lives mostly depended on physical tools and methods to do things. Nowadays, everything depends on computers and applications running on them. Therefore, our biggest quest in this century or maybe beyond is to optimize these applications.</p>
+<p>In this quest, with the advancements in technology, we moved to multicore CPU architecture to parallel process the tasks. But, writing software for multicore architecture is complicated, one has to be a vigilant programmer, as shared data become convoluted quickly.</p>
+<p>To enable modern software engineers to harness multicore architecture, we need some synchronization mechanism to work with shared resources concurrently. The traditional and rudimentary solution to this problem is to take locks (Mutex, Spinlock, or Futex). But, there is a better solution for a specific scenario of the reader-writer problem.</p>
+<p>The reader-writer scenario where we have a single writer and multiple readers extensively accessing the shared resources. In this scenario, RCU offers benefits over traditional locks.</p>
+<p>The Linux RCU offers basic Application Programming Interface (API) to use RCU. Let&rsquo;s go over some of them one by one:</p>
+<!--Added backslash to keep description in next line-->
+<ol>
+<li>
+<p><code>rcu_assign_pointer</code><br>
+To safely communicate a value change to the reader, it assigns a pointer that is used by the updater. Other than that, it also executes any memory barrier instructions for a given CPU architecture.</p>
+</li>
+<li>
+<p><code>rcu_dereference</code><br>
+The reader uses it inside the RCU read-critical region to read an RCU protected pointer, which gives a value that can be safely dereferenced later. Like <code>rcu_assign_pointer</code>, it also executes memory barriers for a given CPU architecture.</p>
+</li>
+<li>
+<p><code>rcu_read_lock</code><br>
+The reader takes a read lock to inform the reclaimer that it is entering a critical section. And for that duration, any RCU protected data structure should not be reclaimed.</p>
+</li>
+<li>
+<p><code>rcu_read_unlock</code><br>
+The reader issues read unlock to inform the reclaimer that the reader is exiting the RCU critical region. Alluding that it may reclaim RCU protected data structures.</p>
+</li>
+<li>
+<p><code>synchronize_rcu</code><br>
+The writer uses <code>synchronize_rcu</code> just after the Updation code. In the writer, this divides the updater and reclaimer. It blocks the writer until all pre-existing RCU read-side critical sections on all the CPUs have completed. One important thing, which is generally missed is that <code>synchronize_rcu</code> will wait only for readers that are currently in the critical section and not for any subsequent RCU read critical sections. This also makes sense, given that any subsequent read-critical sections cannot hold a reference to the old data structure. <code>Synchronize_rcu</code> is the key ingredient of the RCU recipe, and to better understand it, we will discuss it in-depth in future posts.</p>
+</li>
+</ol>
+        
+      </div>
+      <div class="paginator">
+        
+        <a></a>
+        
+        
+        <a></a>
+        
+      </div>
+      <div class="comment">
+        
+        
+        
+        
+      </div>
+      
+    </main>
+    <footer id="footer">
+  <div>
+    <span>© 2021</span>
+    
+  </div>
+
+  <div>
+    <span>Powered by </span>
+    <a class="link" href="https://gohugo.io/">Hugo</a>
+  </div>
+
+  <div class="footnote">
+    <span>Follow me on <a class=link href=https://github.com/rajdroid>GitHub</a>, <a class=link href=https://twitter.com/rajatbajpai94>Twitter</a> or <a class=link href=/index.xml>RSS</a> | <a class=link href=https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh target=_blank rel=noopener>CC BY-NC-SA 4.0</a></span>
+  </div>
+</footer>
+
+  </div>
+  
+
+
+
+
+
+</body>
+
+</html>
