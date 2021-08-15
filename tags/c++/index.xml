@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Posts on Rajat Bajpai</title>
-    <link>https://rajatbajpai.com/post/</link>
-    <description>Recent content in Posts on Rajat Bajpai</description>
+    <title>C&#43;&#43; on Rajat Bajpai</title>
+    <link>https://rajatbajpai.com/tags/c&#43;&#43;/</link>
+    <description>Recent content in C&#43;&#43; on Rajat Bajpai</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Fri, 13 Aug 2021 00:00:00 +0530</lastBuildDate><atom:link href="https://rajatbajpai.com/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 13 Aug 2021 00:00:00 +0530</lastBuildDate><atom:link href="https://rajatbajpai.com/tags/c++/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Curious case of std::optional utility</title>
       <link>https://rajatbajpai.com/post/optional/</link>
@@ -85,45 +85,6 @@ In contrast, the second example is using &lt;code&gt;std::optional&lt;/code&gt; 
   &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;SystemFunctionCallAST&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;$display&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;args&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
 &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;In summary, I believe &lt;code&gt;std::optional&lt;/code&gt; offers some logical use cases where we can use it while developing software applications using C++. However, we might need to think of new ways to design our applications.&lt;/p&gt;</description>
-      
-    </item>
-    
-    <item>
-      <title>Read Copy Update - A basic overview of a synchronization mechanism</title>
-      <link>https://rajatbajpai.com/post/rcu/</link>
-      <pubDate>Sat, 07 Aug 2021 18:59:43 +0530</pubDate>
-      
-      <guid>https://rajatbajpai.com/post/rcu/</guid>
-      
-      <description>&lt;p&gt;We homo sapiens have come a long way from the stone age to silicon age. One of the main reasons for our evolution to sophisticated beings is striving to do something better than earlier. In the 21st century term, it means being more productive.&lt;/p&gt;
-&lt;p&gt;Earlier, our lives mostly depended on physical tools and methods to do things. Nowadays, everything depends on computers and applications running on them. Therefore, our biggest quest in this century or maybe beyond is to optimize these applications.&lt;/p&gt;
-&lt;p&gt;In this quest, with the advancements in technology, we moved to multicore CPU architecture to parallel process the tasks. But, writing software for multicore architecture is complicated, one has to be a vigilant programmer, as shared data become convoluted quickly.&lt;/p&gt;
-&lt;p&gt;To enable modern software engineers to harness multicore architecture, we need some synchronization mechanism to work with shared resources concurrently. The traditional and rudimentary solution to this problem is to take locks (Mutex, Spinlock, or Futex). But, there is a better solution for a specific scenario of the reader-writer problem.&lt;/p&gt;
-&lt;p&gt;The reader-writer scenario where we have a single writer and multiple readers extensively accessing the shared resources. In this scenario, RCU offers benefits over traditional locks.&lt;/p&gt;
-&lt;p&gt;The Linux RCU offers basic Application Programming Interface (API) to use RCU. Let&amp;rsquo;s go over some of them one by one:&lt;/p&gt;
-&lt;!--Added backslash to keep description in next line--&gt;
-&lt;ol&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;code&gt;rcu_assign_pointer&lt;/code&gt;&lt;br&gt;
-To safely communicate a value change to the reader, it assigns a pointer that is used by the updater. Other than that, it also executes any memory barrier instructions for a given CPU architecture.&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;code&gt;rcu_dereference&lt;/code&gt;&lt;br&gt;
-The reader uses it inside the RCU read-critical region to read an RCU protected pointer, which gives a value that can be safely dereferenced later. Like &lt;code&gt;rcu_assign_pointer&lt;/code&gt;, it also executes memory barriers for a given CPU architecture.&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;code&gt;rcu_read_lock&lt;/code&gt;&lt;br&gt;
-The reader takes a read lock to inform the reclaimer that it is entering a critical section. And for that duration, any RCU protected data structure should not be reclaimed.&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;code&gt;rcu_read_unlock&lt;/code&gt;&lt;br&gt;
-The reader issues read unlock to inform the reclaimer that the reader is exiting the RCU critical region. Alluding that it may reclaim RCU protected data structures.&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;code&gt;synchronize_rcu&lt;/code&gt;&lt;br&gt;
-The writer uses &lt;code&gt;synchronize_rcu&lt;/code&gt; just after the Updation code. In the writer, this divides the updater and reclaimer. It blocks the writer until all pre-existing RCU read-side critical sections on all the CPUs have completed. One important thing, which is generally missed is that &lt;code&gt;synchronize_rcu&lt;/code&gt; will wait only for readers that are currently in the critical section and not for any subsequent RCU read critical sections. This also makes sense, given that any subsequent read-critical sections cannot hold a reference to the old data structure. &lt;code&gt;Synchronize_rcu&lt;/code&gt; is the key ingredient of the RCU recipe, and to better understand it, we will discuss it in-depth in future posts.&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ol&gt;</description>
       
     </item>
     

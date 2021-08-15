@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+
+<meta name="author" content="author">
+
+
+
+<meta name="description" content="An article to discuss valid std::optional utility scenarios">
+
+
+
+<link rel="icon" href="/favicon.ico">
+
+
+
+<meta name="keywords" content=" software engineer  personal blog  technical blog ">
+
+
+
+
+<script>
+  
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']],
+      processEscapes: true,
+      processEnvironments: true,
+    },
+    options: {
+      skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    }
+  };
+</script>
+
+<script async defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+
+
+
+
+<link rel="canonical" href="https://rajatbajpai.com/post/optional/">
+
+
+
+
+<title>Curious case of std::optional utility - Rajat Bajpai</title>
+
+
+
+<link media="screen" rel="stylesheet" href='https://rajatbajpai.com/css/common.css'>
+<link media="screen" rel="stylesheet" href='https://rajatbajpai.com/css/content.css'>
+<link media="screen" rel="stylesheet" href='https://rajatbajpai.com/css/highlight.css'>
+
+
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Curious case of std::optional utility" />
+<meta name="twitter:description" content="In 2017, C&#43;&#43; standard introduced std::optional utility to represent nullable types. In this post, I will try to explain the logical use case for std::optional with the help of a real example (I mean sort of!)." />
+
+
+  <link rel="stylesheet" href='https://rajatbajpai.com/css/single.css'>
+</head>
+
+<body>
+  <div id="wrapper">
+    <header id="header">
+  <h1>
+    <a href="https://rajatbajpai.com">Rajat Bajpai</a>
+  </h1>
+
+  <nav>
+    
+    <span class="nav-bar-item">
+      <a class="link" href="/">Post</a>
+    </span>
+    
+    <span class="nav-bar-item">
+      <a class="link" href="/post/">Archives</a>
+    </span>
+    
+    <span class="nav-bar-item">
+      <a class="link" href="/about/">About</a>
+    </span>
+    
+  </nav>
+</header>
+
+    <main id="main" class="post">
+      
+      
+      
+      <h1>Curious case of std::optional utility</h1>
+      
+      <div>
+        <b>Keywords: </b>
+        
+        <a class="link" href='https://rajatbajpai.com/tags/c&#43;&#43;'>#C&#43;&#43;</a>
+        
+        <a class="link" href='https://rajatbajpai.com/tags/compilers'>#compilers</a>
+        
+        <a class="link" href='https://rajatbajpai.com/tags/software-engineering'>#software engineering</a>
+        
+        <a class="link" href='https://rajatbajpai.com/tags/c&#43;&#43;-utilities'>#c&#43;&#43; utilities</a>
+        
+      </div>
+      
+      <div class="content">
+        
+        <p>In 2017, C++ standard introduced <code>std::optional</code> utility to represent nullable types. In this post, I will try to explain the logical use case for <code>std::optional</code> with the help of a real example (I mean sort of!).</p>
+<p>I work on the SystemVerilog compiler at Cadence. The SystemVerilog language provides some system utilities, and they are called <em>System Function Call</em> expressions. Interestingly, these utilities can have empty parameters. In other words, parameters of a <em>System Function Call</em> expressions are optional (tada!). All the SystemVerilog stuff aside, we can represent this expression in Abstract Syntax Tree (AST). In AST, we can have two fields: name and vector of actual parameters.</p>
+<p>Before we jump to AST design using <code>std::optional</code>, I will show you how I would have done it without the <code>std::optional</code>. The first example is using <code>std::nullptr</code> to represent empty parameters. Furthermore, it is using pointers to use <code>std::nullptr</code> as a sentinel value to represent empty parameters. If we want to store value instead of pointers, then we need to devise a sentinel value to represent empty parameter. Honestly, I don&rsquo;t think it is a bad design to use <code>std::nullptr</code> for an empty parameter.</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;memory&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;string_view&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;vector&gt;</span><span class="cp">
+</span><span class="cp"></span>
+<span class="k">class</span> <span class="nc">ExpressionAST</span> <span class="p">{};</span>
+
+<span class="k">class</span> <span class="nc">SystemFunctionCallAST</span> <span class="o">:</span> <span class="k">public</span> <span class="n">ExpressionAST</span> <span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+  <span class="c1">// Constructors...
+</span><span class="c1"></span>  <span class="n">SystemFunctionCallAST</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string_view</span> <span class="n">name</span><span class="p">,</span>
+                        <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">ExpressionAST</span><span class="o">&gt;&gt;</span> <span class="o">&amp;</span><span class="n">actualArgs</span><span class="p">)</span>
+      <span class="o">:</span> <span class="n">name_</span><span class="p">{</span><span class="n">name</span><span class="p">},</span> <span class="n">actualArgs_</span><span class="p">{</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">actualArgs</span><span class="p">)}</span> <span class="p">{}</span>
+
+  <span class="c1">// Observers...
+</span><span class="c1"></span>  <span class="k">const</span> <span class="k">auto</span> <span class="o">&amp;</span><span class="n">actualArguments</span><span class="p">()</span> <span class="k">const</span> <span class="k">noexcept</span> <span class="p">{</span> <span class="k">return</span> <span class="n">actualArgs_</span><span class="p">;</span> <span class="p">}</span>
+
+<span class="k">private</span><span class="o">:</span>
+  <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string_view</span> <span class="n">name_</span><span class="p">;</span>
+  <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">ExpressionAST</span><span class="o">&gt;&gt;</span> <span class="n">actualArgs_</span><span class="p">;</span>
+  <span class="c1">// ... other members
+</span><span class="c1"></span><span class="p">};</span>
+
+<span class="k">auto</span> <span class="nf">createDisplaySystemFunctionCall</span><span class="p">()</span> <span class="p">{</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">ExpressionAST</span><span class="o">&gt;&gt;</span> <span class="n">args</span><span class="p">;</span>
+  <span class="n">args</span><span class="p">.</span><span class="n">emplace_back</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">make_unique</span><span class="o">&lt;</span><span class="n">ExpressionAST</span><span class="o">&gt;</span><span class="p">());</span>
+  <span class="n">args</span><span class="p">.</span><span class="n">emplace_back</span><span class="p">(</span><span class="k">nullptr</span><span class="p">);</span>
+  <span class="n">args</span><span class="p">.</span><span class="n">emplace_back</span><span class="p">(</span><span class="k">nullptr</span><span class="p">);</span>
+  <span class="n">args</span><span class="p">.</span><span class="n">emplace_back</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">make_unique</span><span class="o">&lt;</span><span class="n">ExpressionAST</span><span class="o">&gt;</span><span class="p">());</span>
+
+  <span class="k">return</span> <span class="n">SystemFunctionCallAST</span><span class="p">(</span><span class="s">&#34;$display&#34;</span><span class="p">,</span> <span class="n">args</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div><p><br>
+In contrast, the second example is using <code>std::optional</code> to represent parameters. The <code>std::optional</code> utility provides a special type to represent the null value (<code>std::nullopt</code>); thus, we don&rsquo;t need to devise a new sentinel for this purpose.</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;optional&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;string_view&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;vector&gt;</span><span class="cp">
+</span><span class="cp"></span>
+<span class="k">class</span> <span class="nc">ExpressionAST</span> <span class="p">{};</span>
+
+<span class="k">class</span> <span class="nc">SystemFunctionCallAST</span> <span class="o">:</span> <span class="k">public</span> <span class="n">ExpressionAST</span> <span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+  <span class="c1">// Constructors
+</span><span class="c1"></span>  <span class="n">SystemFunctionCallAST</span><span class="p">(</span>
+      <span class="n">std</span><span class="o">::</span><span class="n">string_view</span> <span class="n">name</span><span class="p">,</span>
+      <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">optional</span><span class="o">&lt;</span><span class="n">ExpressionAST</span><span class="o">&gt;&gt;</span> <span class="o">&amp;</span><span class="n">actualArgs</span><span class="p">)</span>
+      <span class="o">:</span> <span class="n">name_</span><span class="p">{</span><span class="n">name</span><span class="p">},</span> <span class="n">actualArgs_</span><span class="p">{</span><span class="n">actualArgs</span><span class="p">}</span> <span class="p">{}</span>
+  <span class="c1">// ....
+</span><span class="c1"></span>
+  <span class="c1">// Observers...
+</span><span class="c1"></span>  <span class="k">const</span> <span class="k">auto</span> <span class="o">&amp;</span><span class="n">actualArguments</span><span class="p">()</span> <span class="k">const</span> <span class="k">noexcept</span> <span class="p">{</span> <span class="k">return</span> <span class="n">actualArgs_</span><span class="p">;</span> <span class="p">}</span>
+
+<span class="k">private</span><span class="o">:</span>
+  <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string_view</span> <span class="n">name_</span><span class="p">;</span>
+  <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">optional</span><span class="o">&lt;</span><span class="n">ExpressionAST</span><span class="o">&gt;&gt;</span> <span class="n">actualArgs_</span><span class="p">;</span>
+  <span class="c1">// ... other members
+</span><span class="c1"></span><span class="p">};</span>
+
+<span class="k">auto</span> <span class="nf">createDisplaySystemFunctionCall</span><span class="p">()</span> <span class="p">{</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">optional</span><span class="o">&lt;</span><span class="n">ExpressionAST</span><span class="o">&gt;&gt;</span> <span class="n">args</span><span class="p">;</span>
+  <span class="n">args</span><span class="p">.</span><span class="n">emplace_back</span><span class="p">(</span><span class="n">ExpressionAST</span><span class="p">());</span>
+  <span class="n">args</span><span class="p">.</span><span class="n">emplace_back</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">nullopt</span><span class="p">);</span>
+  <span class="n">args</span><span class="p">.</span><span class="n">emplace_back</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">nullopt</span><span class="p">);</span>
+
+  <span class="k">return</span> <span class="n">SystemFunctionCallAST</span><span class="p">(</span><span class="s">&#34;$display&#34;</span><span class="p">,</span> <span class="n">args</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div><p>In summary, I believe <code>std::optional</code> offers some logical use cases where we can use it while developing software applications using C++. However, we might need to think of new ways to design our applications.</p>
+        
+      </div>
+      <div class="paginator">
+        
+        <a class="link" href="https://rajatbajpai.com/post/rcu/">← prev</a>
+        
+        
+        <a></a>
+        
+      </div>
+      <div class="comment">
+        
+        
+        
+        
+      </div>
+      
+    </main>
+    <footer id="footer">
+  <div>
+    <span>© 2021</span>
+    
+  </div>
+
+  <div>
+    <span>Powered by </span>
+    <a class="link" href="https://gohugo.io/">Hugo</a>
+  </div>
+
+  <div class="footnote">
+    <span>Follow me on <a class=link href=https://github.com/rajdroid>GitHub</a>, <a class=link href=https://twitter.com/rajatbajpai94>Twitter</a> or <a class=link href=/index.xml>RSS</a> | <a class=link href=https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh target=_blank rel=noopener>CC BY-NC-SA 4.0</a></span>
+  </div>
+</footer>
+
+  </div>
+  
+
+
+
+
+
+</body>
+
+</html>
