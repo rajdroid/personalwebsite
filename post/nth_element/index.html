@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+
+<meta name="author" content="author">
+
+
+
+<meta name="description" content="An article to discuss std::nth_element use case">
+
+
+
+<link rel="icon" href="/favicon.ico">
+
+
+
+<meta name="keywords" content=" software engineer  personal blog  technical blog ">
+
+
+
+
+<script>
+  
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']],
+      processEscapes: true,
+      processEnvironments: true,
+    },
+    options: {
+      skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    }
+  };
+</script>
+
+<script async defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+
+
+
+
+<link rel="canonical" href="https://rajatbajpai.com/post/nth_element/">
+
+
+
+
+<title>Know your tools: std::nth_element - Rajat Bajpai</title>
+
+
+
+<link media="screen" rel="stylesheet" href='https://rajatbajpai.com/css/common.css'>
+<link media="screen" rel="stylesheet" href='https://rajatbajpai.com/css/content.css'>
+<link media="screen" rel="stylesheet" href='https://rajatbajpai.com/css/highlight.css'>
+
+
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Know your tools: std::nth_element" />
+<meta name="twitter:description" content="All seasoned C&#43;&#43; developers are aware of the standard library and all the algorithms it provides. Today, I will discuss one such algorithm that is more efficient in a large dataset." />
+
+
+  <link rel="stylesheet" href='https://rajatbajpai.com/css/single.css'>
+</head>
+
+<body>
+  <div id="wrapper">
+    <header id="header">
+  <h1>
+    <a href="https://rajatbajpai.com">Rajat Bajpai</a>
+  </h1>
+
+  <nav>
+    
+    <span class="nav-bar-item">
+      <a class="link" href="/">Post</a>
+    </span>
+    
+    <span class="nav-bar-item">
+      <a class="link" href="/post/">Archives</a>
+    </span>
+    
+    <span class="nav-bar-item">
+      <a class="link" href="/about/">About</a>
+    </span>
+    
+  </nav>
+</header>
+
+    <main id="main" class="post">
+      
+      
+      
+      <h1>Know your tools: std::nth_element</h1>
+      
+      <div>
+        <b>Keywords: </b>
+        
+        <a class="link" href='https://rajatbajpai.com/tags/c&#43;&#43;'>#c&#43;&#43;</a>
+        
+        <a class="link" href='https://rajatbajpai.com/tags/c&#43;&#43;-algorithms'>#c&#43;&#43; algorithms</a>
+        
+        <a class="link" href='https://rajatbajpai.com/tags/optimizations'>#optimizations</a>
+        
+      </div>
+      
+      <div class="content">
+        
+        <p>All seasoned C++ developers are aware of the standard library and all the algorithms it provides. Today, I will discuss one such algorithm that is more efficient in a large dataset.</p>
+<p>Without further ado, let&rsquo;s jump right into the problem statement. Let&rsquo;s suppose we are tasked to build an API that returns the medium of the distribution. I will discuss two approaches to design the API.</p>
+<p>First, we can use <code>std::sort</code> to sort the whole distribution and pick the middle two elements if we have even numbers in the distribution and the middle element if we have odd numbers in the distribution. While this approach is functionally correct; however, think about the scenario when we have millions of numbers in the distribution. We will be sorting the whole distribution even though we require only the middle elements.</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="cp">#include</span> <span class="cpf">&lt;algorithm&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;vector&gt;</span><span class="cp">
+</span><span class="cp"></span>
+<span class="k">auto</span> <span class="nf">median</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="o">&amp;</span><span class="n">numbers</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">auto</span> <span class="n">len</span> <span class="o">=</span> <span class="n">numbers</span><span class="p">.</span><span class="n">size</span><span class="p">();</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">sort</span><span class="p">(</span><span class="n">begin</span><span class="p">(</span><span class="n">numbers</span><span class="p">),</span> <span class="n">end</span><span class="p">(</span><span class="n">numbers</span><span class="p">));</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="n">len</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">numbers</span><span class="p">[</span><span class="n">len</span> <span class="o">/</span> <span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">numbers</span><span class="p">[</span><span class="n">len</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="mi">2</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="n">numbers</span><span class="p">[</span><span class="n">len</span> <span class="o">/</span> <span class="mi">2</span><span class="p">];</span>
+<span class="p">}</span>
+</code></pre></div><p><br>
+We can optimize the first approach by sorting distribution in such a way that middle elements are in their correct positions. In other words, middle elements will be those as if we have sorted the whole distribution. This is exactly what we are doing in the second approach using <code>std::nth_element</code>. The benefit of the second approach is that we don&rsquo;t have to sort the whole distribution upfront.</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="cp">#include</span> <span class="cpf">&lt;algorithm&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;vector&gt;</span><span class="cp">
+</span><span class="cp"></span>
+<span class="k">auto</span> <span class="nf">median</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="o">&amp;</span><span class="n">numbers</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">auto</span> <span class="n">len</span> <span class="o">=</span> <span class="n">numbers</span><span class="p">.</span><span class="n">size</span><span class="p">();</span>
+  <span class="k">auto</span> <span class="n">firstMiddleElementItr</span> <span class="o">=</span> <span class="n">begin</span><span class="p">(</span><span class="n">numbers</span><span class="p">)</span> <span class="o">+</span> <span class="n">len</span> <span class="o">/</span> <span class="mi">2</span><span class="p">;</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">nth_element</span><span class="p">(</span><span class="n">begin</span><span class="p">(</span><span class="n">numbers</span><span class="p">),</span> <span class="n">firstMiddleElementItr</span><span class="p">,</span> <span class="n">end</span><span class="p">(</span><span class="n">numbers</span><span class="p">));</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="n">len</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="o">*</span><span class="n">firstMiddleElementItr</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">auto</span> <span class="n">secondMiddleElementItr</span> <span class="o">=</span> <span class="n">firstMiddleElementItr</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">nth_element</span><span class="p">(</span><span class="n">begin</span><span class="p">(</span><span class="n">numbers</span><span class="p">),</span> <span class="n">secondMiddleElementItr</span><span class="p">,</span> <span class="n">end</span><span class="p">(</span><span class="n">numbers</span><span class="p">));</span>
+  <span class="k">return</span> <span class="p">(</span><span class="o">*</span><span class="n">firstMiddleElementItr</span> <span class="o">+</span> <span class="o">*</span><span class="n">secondMiddleElementItr</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div><p>It&rsquo;s evident from the above discussion that we can devise neat APIs using the standard library algorithms.</p>
+        
+      </div>
+      <div class="paginator">
+        
+        <a class="link" href="https://rajatbajpai.com/post/optional/">← prev</a>
+        
+        
+        <a></a>
+        
+      </div>
+      <div class="comment">
+        
+        
+        
+        
+      </div>
+      
+    </main>
+    <footer id="footer">
+  <div>
+    <span>© 2021</span>
+    
+  </div>
+
+  <div>
+    <span>Powered by </span>
+    <a class="link" href="https://gohugo.io/">Hugo</a>
+  </div>
+
+  <div class="footnote">
+    <span>Follow me on <a class=link href=https://github.com/rajdroid>GitHub</a>, <a class=link href=https://twitter.com/rajatbajpai94>Twitter</a> or <a class=link href=/index.xml>RSS</a> | <a class=link href=https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh target=_blank rel=noopener>CC BY-NC-SA 4.0</a></span>
+  </div>
+</footer>
+
+  </div>
+  
+
+
+
+
+
+</body>
+
+</html>
