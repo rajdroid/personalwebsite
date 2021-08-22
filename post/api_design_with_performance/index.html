@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+
+<meta name="author" content="author">
+
+
+
+<meta name="description" content="An article to discuss the designing a general purpose utility in C&#43;&#43;">
+
+
+
+<link rel="icon" href="/favicon.ico">
+
+
+
+<meta name="keywords" content=" software engineer  personal blog  technical blog ">
+
+
+
+
+<script>
+  
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']],
+      processEscapes: true,
+      processEnvironments: true,
+    },
+    options: {
+      skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    }
+  };
+</script>
+
+<script async defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+
+
+
+
+<link rel="canonical" href="https://rajatbajpai.com/post/api_design_with_performance/">
+
+
+
+
+<title>Recipe using C&#43;&#43; standard library ingredients - Rajat Bajpai</title>
+
+
+
+<link media="screen" rel="stylesheet" href='https://rajatbajpai.com/css/common.css'>
+<link media="screen" rel="stylesheet" href='https://rajatbajpai.com/css/content.css'>
+<link media="screen" rel="stylesheet" href='https://rajatbajpai.com/css/highlight.css'>
+
+
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Recipe using C&#43;&#43; standard library ingredients" />
+<meta name="twitter:description" content="Designing a good utility is a complex task because of the number of people going to use it. I believe any utility has three primary purposes:
+
+It must give the correct results.
+It should be easy to use.
+It should have adequate performance.
+" />
+
+
+  <link rel="stylesheet" href='https://rajatbajpai.com/css/single.css'>
+</head>
+
+<body>
+  <div id="wrapper">
+    <header id="header">
+  <h1>
+    <a href="https://rajatbajpai.com">Rajat Bajpai</a>
+  </h1>
+
+  <nav>
+    
+    <span class="nav-bar-item">
+      <a class="link" href="/">Post</a>
+    </span>
+    
+    <span class="nav-bar-item">
+      <a class="link" href="/post/">Archives</a>
+    </span>
+    
+    <span class="nav-bar-item">
+      <a class="link" href="/about/">About</a>
+    </span>
+    
+  </nav>
+</header>
+
+    <main id="main" class="post">
+      
+      
+      
+      <h1>Recipe using C&#43;&#43; standard library ingredients</h1>
+      
+      <div>
+        <b>Keywords: </b>
+        
+        <a class="link" href='https://rajatbajpai.com/tags/c&#43;&#43;'>#c&#43;&#43;</a>
+        
+        <a class="link" href='https://rajatbajpai.com/tags/c&#43;&#43;-algorithms'>#c&#43;&#43; algorithms</a>
+        
+        <a class="link" href='https://rajatbajpai.com/tags/performance'>#performance</a>
+        
+        <a class="link" href='https://rajatbajpai.com/tags/optimizations'>#optimizations</a>
+        
+      </div>
+      
+      <div class="content">
+        
+        <p>Designing a good utility is a complex task because of the number of people going to use it. I believe any utility has three primary purposes:</p>
+<ol>
+<li>It must give the correct results.</li>
+<li>It should be easy to use.</li>
+<li>It should have adequate performance.</li>
+</ol>
+<p>Today, I will discuss the third point: performance. The performance of a utility is paramount. If the utility is used in several places, then these degradations will add up to massive degradation. Thus, while designing a utility, we should be careful and think about the various approaches. We should think about the various tradeoffs each approach has. One approach might not be best for all situations.</p>
+<p>Let&rsquo;s jump right into the example. Suppose we need to design an API that will return if an element exists in top N elements in a sequence. For example, you have a sequence (5, 4, 3, 2, 1), and you need to check if 3 exists in the top 3 elements. In this case, the answer will be Yes. I have discussed three approaches to design this API.</p>
+<p>First, the straightforward approach will be to sort the whole array and check if an element exists in the top N elements. This approach is functionally correct and will be fine if we have small sequences. However, this approach will not provide adequate performance for large sequences.</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="cp">#include</span> <span class="cpf">&lt;algorithm&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;vector&gt;</span><span class="cp">
+</span><span class="cp"></span>
+<span class="kt">bool</span> <span class="nf">is_top_n</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="o">&amp;</span><span class="n">sequences</span><span class="p">,</span> <span class="kt">int</span> <span class="n">n</span><span class="p">,</span> <span class="kt">int</span> <span class="n">elem</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">sort</span><span class="p">(</span><span class="n">begin</span><span class="p">(</span><span class="n">sequences</span><span class="p">),</span> <span class="n">end</span><span class="p">(</span><span class="n">sequences</span><span class="p">));</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="n">elem</span> <span class="o">&lt;</span> <span class="n">sequences</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">||</span> <span class="n">elem</span> <span class="o">&gt;</span> <span class="n">sequences</span><span class="p">[</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div><p>Second, we can improve on the first approach. Instead of sorting the whole sequence, we can partially sort N elements of the sequence. That&rsquo;s shown in the code below. Interestingly, initially, I thought this approach is better than the first approach. I mean it should be because, in the first approach, we are sorting the whole sequence, while in this approach, we are sorting the top N elements. However, performance numbers don&rsquo;t agree with me. See the performance numbers at the end of the post. I believe this is happening because of the different algorithms used in the <code>std::sort</code> and <code>std::partial_sort</code>.</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="cp">#include</span> <span class="cpf">&lt;algorithm&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;vector&gt;</span><span class="cp">
+</span><span class="cp"></span>
+<span class="kt">bool</span> <span class="nf">is_top_n</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="o">&amp;</span><span class="n">sequences</span><span class="p">,</span> <span class="kt">int</span> <span class="n">n</span><span class="p">,</span> <span class="kt">int</span> <span class="n">elem</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">partial_sort</span><span class="p">(</span><span class="n">begin</span><span class="p">(</span><span class="n">sequences</span><span class="p">),</span> <span class="n">begin</span><span class="p">(</span><span class="n">sequences</span><span class="p">)</span> <span class="o">+</span> <span class="n">n</span><span class="p">,</span> <span class="n">end</span><span class="p">(</span><span class="n">sequences</span><span class="p">));</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="n">elem</span> <span class="o">&lt;</span> <span class="n">sequences</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">||</span> <span class="n">elem</span> <span class="o">&gt;</span> <span class="n">sequences</span><span class="p">[</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div><p>Third, instead of sorting the whole sequence or partial sequence, we can use <code>std::nth_element</code> to put boundary elements of the sequence in their correct position. As expected, this approach is far better than the above two approaches. You can take a look at the performance numbers at the end to see for yourself.</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="cp">#include</span> <span class="cpf">&lt;algorithm&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;vector&gt;</span><span class="cp">
+</span><span class="cp"></span>
+<span class="kt">bool</span> <span class="nf">is_top_n</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="o">&amp;</span><span class="n">sequences</span><span class="p">,</span> <span class="kt">int</span> <span class="n">n</span><span class="p">,</span> <span class="kt">int</span> <span class="n">elem</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">nth_element</span><span class="p">(</span><span class="n">begin</span><span class="p">(</span><span class="n">sequences</span><span class="p">),</span> <span class="n">begin</span><span class="p">(</span><span class="n">sequences</span><span class="p">),</span> <span class="n">end</span><span class="p">(</span><span class="n">sequences</span><span class="p">));</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="n">elem</span> <span class="o">&lt;</span> <span class="n">sequences</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="n">std</span><span class="o">::</span><span class="n">nth_element</span><span class="p">(</span><span class="n">begin</span><span class="p">(</span><span class="n">sequences</span><span class="p">),</span> <span class="n">begin</span><span class="p">(</span><span class="n">sequences</span><span class="p">)</span> <span class="o">+</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">end</span><span class="p">(</span><span class="n">sequences</span><span class="p">));</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="n">elem</span> <span class="o">&gt;</span> <span class="n">sequences</span><span class="p">[</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div><p>That&rsquo;s it, we designed a utility and improved its initial design and saw that sometimes what we think will improve the performance doesn&rsquo;t do so. Thus, when you are designing for performance, please benchmark your different approaches. That&rsquo;s the only way to be sure.</p>
+        
+      </div>
+      <div class="paginator">
+        
+        <a class="link" href="https://rajatbajpai.com/post/nth_element/">← prev</a>
+        
+        
+        <a></a>
+        
+      </div>
+      <div class="comment">
+        
+        
+        
+        
+      </div>
+      
+    </main>
+    <footer id="footer">
+  <div>
+    <span>© 2021</span>
+    
+  </div>
+
+  <div>
+    <span>Powered by </span>
+    <a class="link" href="https://gohugo.io/">Hugo</a>
+  </div>
+
+  <div class="footnote">
+    <span>Follow me on <a class=link href=https://github.com/rajdroid>GitHub</a>, <a class=link href=https://twitter.com/rajatbajpai94>Twitter</a> or <a class=link href=/index.xml>RSS</a> | <a class=link href=https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh target=_blank rel=noopener>CC BY-NC-SA 4.0</a></span>
+  </div>
+</footer>
+
+  </div>
+  
+
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'G-QRJ11VDZCS', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+</body>
+
+</html>
