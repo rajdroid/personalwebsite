@@ -67,7 +67,8 @@
 
   &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;true&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
 &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;That&amp;rsquo;s it, we designed a utility and improved its initial design and saw that sometimes what we think will improve the performance doesn&amp;rsquo;t do so. Thus, when you are designing for performance, please benchmark your different approaches. That&amp;rsquo;s the only way to be sure.&lt;/p&gt;</description>
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://rajatbajpai.com/img/performance_pos.png&#34; alt=&#34;performance numbers&#34;&gt;&lt;/p&gt;
+&lt;p&gt;That&amp;rsquo;s it, we designed a utility and improved its initial design and saw that sometimes what we think will improve the performance doesn&amp;rsquo;t do so. Thus, when you are designing for performance, please benchmark your different approaches. That&amp;rsquo;s the only way to be sure.&lt;/p&gt;</description>
       
     </item>
     
