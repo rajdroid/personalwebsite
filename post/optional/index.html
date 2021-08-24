@@ -126,14 +126,16 @@
   <span class="c1">// Constructors...
 </span><span class="c1"></span>  <span class="n">SystemFunctionCallAST</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string_view</span> <span class="n">name</span><span class="p">,</span>
                         <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">ExpressionAST</span><span class="o">&gt;&gt;</span> <span class="o">&amp;</span><span class="n">actualArgs</span><span class="p">)</span>
-      <span class="o">:</span> <span class="n">name_</span><span class="p">{</span><span class="n">name</span><span class="p">},</span> <span class="n">actualArgs_</span><span class="p">{</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">actualArgs</span><span class="p">)}</span> <span class="p">{}</span>
-
-  <span class="c1">// Observers...
-</span><span class="c1"></span>  <span class="k">const</span> <span class="k">auto</span> <span class="o">&amp;</span><span class="n">actualArguments</span><span class="p">()</span> <span class="k">const</span> <span class="k">noexcept</span> <span class="p">{</span> <span class="k">return</span> <span class="n">actualArgs_</span><span class="p">;</span> <span class="p">}</span>
+      <span class="o">:</span> <span class="n">name_</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">actualArgs_</span><span class="p">.</span><span class="n">reserve</span><span class="p">(</span><span class="n">actualArgs</span><span class="p">.</span><span class="n">size</span><span class="p">());</span>
+    <span class="k">for</span> <span class="p">(</span><span class="k">auto</span> <span class="o">&amp;</span><span class="nl">arg</span> <span class="p">:</span> <span class="n">actualArgs</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">actualArgs_</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">arg</span><span class="p">));</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
 
 <span class="k">private</span><span class="o">:</span>
   <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string_view</span> <span class="n">name_</span><span class="p">;</span>
-  <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">ExpressionAST</span><span class="o">&gt;&gt;</span> <span class="n">actualArgs_</span><span class="p">;</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">ExpressionAST</span><span class="o">&gt;&gt;</span> <span class="n">actualArgs_</span><span class="p">;</span>
   <span class="c1">// ... other members
 </span><span class="c1"></span><span class="p">};</span>
 
@@ -161,7 +163,7 @@ In contrast, the second example is using <code>std::optional</code> to represent
 </span><span class="c1"></span>  <span class="n">SystemFunctionCallAST</span><span class="p">(</span>
       <span class="n">std</span><span class="o">::</span><span class="n">string_view</span> <span class="n">name</span><span class="p">,</span>
       <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">optional</span><span class="o">&lt;</span><span class="n">ExpressionAST</span><span class="o">&gt;&gt;</span> <span class="o">&amp;</span><span class="n">actualArgs</span><span class="p">)</span>
-      <span class="o">:</span> <span class="n">name_</span><span class="p">{</span><span class="n">name</span><span class="p">},</span> <span class="n">actualArgs_</span><span class="p">{</span><span class="n">actualArgs</span><span class="p">}</span> <span class="p">{}</span>
+      <span class="o">:</span> <span class="n">name_</span><span class="p">(</span><span class="n">name</span><span class="p">),</span> <span class="n">actualArgs_</span><span class="p">(</span><span class="n">actualArgs</span><span class="p">)</span> <span class="p">{}</span>
   <span class="c1">// ....
 </span><span class="c1"></span>
   <span class="c1">// Observers...
