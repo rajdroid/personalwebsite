@@ -60,7 +60,7 @@
 
 <meta name="twitter:card" content="summary" />
 <meta name="twitter:title" content="What should we choose: maintainability or arcane performance tricks?" />
-<meta name="twitter:description" content="I have a question for you. What is more important in software development: maintainability or performance? I don&rsquo;t know about you, but I would always lean towards maintainability. However, under some rare circumstances, performance is crucial as well, for example, a fast path of a server, database queries, simulator runtime, etc. I believe most software can get away with maintainability without writing arcane performant code. In these cases, where a minute gain can be instrumental, we can do some things to improve the performance of the applications." />
+<meta name="twitter:description" content="I have a question for you. What is more important in software development: maintainability or performance? I don&rsquo;t know about you, but I would always lean towards maintainability. However, under some rare circumstances, performance is crucial as well, for example, a fast path of a server, database queries, simulator runtime, etc." />
 
 
   <link rel="stylesheet" href='https://rajatbajpai.com/css/single.css'>
@@ -111,7 +111,8 @@
       
       <div class="content">
         
-        <p>I have a question for you. What is more important in software development: maintainability or performance? I don&rsquo;t know about you, but I would always lean towards maintainability. However, under some rare circumstances, performance is crucial as well, for example, a fast path of a server, database queries, simulator runtime, etc. I believe most software can get away with maintainability without writing arcane performant code. In these cases, where a minute gain can be instrumental, we can do some things to improve the performance of the applications.</p>
+        <p><img src="/img/perf_vs_maintenance_header.jpg" alt="Banner"></p>
+<p>I have a question for you. What is more important in software development: maintainability or performance? I don&rsquo;t know about you, but I would always lean towards maintainability. However, under some rare circumstances, performance is crucial as well, for example, a fast path of a server, database queries, simulator runtime, etc. I believe most software can get away with maintainability without writing arcane performant code. In these cases, where a minute gain can be instrumental, we can do some things to improve the performance of the applications.</p>
 <p>Today, I am going to discuss one such scenario in C language. You might say it is an arcane feature. Heck, even I didn&rsquo;t know about it a few years back. That being said, I still believe 99% of system engineers using C language don&rsquo;t need this. But it is always good to know stuff even if you don&rsquo;t need it at the moment.</p>
 <p>Coming back to the topic of this article. What would you say if I told you that you are executing more assembly instructions than you need to while passing a pointer to a function? You might say I have gone cuckoo-bananas. But allow me to explain before being so judgemental. Let the empirical results guide us.</p>
 <p>Let&rsquo;s take a small example to understand what I am saying. The below example takes two pointer arguments and changes their values, and finally returns their sum. Easy peasy, right? The assembly instructions generated for this piece of code with the -O3 compiler flag is shown next.</p>
@@ -141,6 +142,7 @@
 </code></pre></div><p>The difference between the two approaches increases with the increase in the number of arguments. However, this performance benefit comes with a caveat, though. Let&rsquo;s suppose if we pass the same Lvalue in the second example. According to C specification, it is undefined behavior because compiler assumption fails.</p>
 <p>This circle backs to our original discussion, what should we choose: maintainability or performance. There is a slight chance that a new member of your team will know about this arcane keyword, and they might make a mistake, which will introduce hard-to-debug bugs. All in all, I would say choose the performance if you have benchmarked your code. And don&rsquo;t forget to document the interface to minimize the damage.</p>
 <p><em>Please note: Generally, simple and maintainable code is performant as well. If you have not already watched Sean Parent&rsquo;s talk (<a href="https://youtu.be/qH6sSOr-yk8),">https://youtu.be/qH6sSOr-yk8),</a> then do yourself a favor and watch it right now.</em></p>
+
         
       </div>
       <div class="paginator">
