@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+
+<meta name="author" content="author">
+
+
+
+<meta name="description" content="An article to discuss what is beneficial: maintenance or performance">
+
+
+
+<link rel="icon" href="/favicon.ico">
+
+
+
+<meta name="keywords" content=" software engineer  personal blog  technical blog ">
+
+
+
+
+<script>
+  
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']],
+      processEscapes: true,
+      processEnvironments: true,
+    },
+    options: {
+      skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    }
+  };
+</script>
+
+<script async defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+
+
+
+
+<link rel="canonical" href="https://rajatbajpai.com/post/perf_vs_maintenance/">
+
+
+
+
+<title>What should we choose: maintainability or arcane performance tricks? - Rajat Bajpai</title>
+
+
+
+<link media="screen" rel="stylesheet" href='https://rajatbajpai.com/css/common.css'>
+<link media="screen" rel="stylesheet" href='https://rajatbajpai.com/css/content.css'>
+<link media="screen" rel="stylesheet" href='https://rajatbajpai.com/css/highlight.css'>
+
+
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="What should we choose: maintainability or arcane performance tricks?" />
+<meta name="twitter:description" content="I have a question for you. What is more important in software development: maintainability or performance? I don&rsquo;t know about you, but I would always lean towards maintainability. However, under some rare circumstances, performance is crucial as well, for example, a fast path of a server, database queries, simulator runtime, etc. I believe most software can get away with maintainability without writing arcane performant code. In these cases, where a minute gain can be instrumental, we can do some things to improve the performance of the applications." />
+
+
+  <link rel="stylesheet" href='https://rajatbajpai.com/css/single.css'>
+</head>
+
+<body>
+  <div id="wrapper">
+    <header id="header">
+  <h1>
+    <a href="https://rajatbajpai.com">Rajat Bajpai</a>
+  </h1>
+
+  <nav>
+    
+    <span class="nav-bar-item">
+      <a class="link" href="/">Post</a>
+    </span>
+    
+    <span class="nav-bar-item">
+      <a class="link" href="/post/">Archives</a>
+    </span>
+    
+    <span class="nav-bar-item">
+      <a class="link" href="/about/">About</a>
+    </span>
+    
+  </nav>
+</header>
+
+    <main id="main" class="post">
+      
+      
+      
+      <h1>What should we choose: maintainability or arcane performance tricks?</h1>
+      
+      <div>
+        <b>Keywords: </b>
+        
+        <a class="link" href='https://rajatbajpai.com/tags/c-programming-language'>#C programming language</a>
+        
+        <a class="link" href='https://rajatbajpai.com/tags/performance'>#performance</a>
+        
+        <a class="link" href='https://rajatbajpai.com/tags/maintenance'>#maintenance</a>
+        
+        <a class="link" href='https://rajatbajpai.com/tags/assembly-instruction'>#assembly instruction</a>
+        
+      </div>
+      
+      <div class="content">
+        
+        <p>I have a question for you. What is more important in software development: maintainability or performance? I don&rsquo;t know about you, but I would always lean towards maintainability. However, under some rare circumstances, performance is crucial as well, for example, a fast path of a server, database queries, simulator runtime, etc. I believe most software can get away with maintainability without writing arcane performant code. In these cases, where a minute gain can be instrumental, we can do some things to improve the performance of the applications.</p>
+<p>Today, I am going to discuss one such scenario in C language. You might say it is an arcane feature. Heck, even I didn&rsquo;t know about it a few years back. That being said, I still believe 99% of system engineers using C language don&rsquo;t need this. But it is always good to know stuff even if you don&rsquo;t need it at the moment.</p>
+<p>Coming back to the topic of this article. What would you say if I told you that you are executing more assembly instructions than you need to while passing a pointer to a function? You might say I have gone cuckoo-bananas. But allow me to explain before being so judgemental. Let the empirical results guide us.</p>
+<p>Let&rsquo;s take a small example to understand what I am saying. The below example takes two pointer arguments and changes their values, and finally returns their sum. Easy peasy, right? The assembly instructions generated for this piece of code with the -O3 compiler flag is shown next.</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="kt">int</span> <span class="nf">change_and_add</span><span class="p">(</span><span class="kt">int</span> <span class="o">*</span> <span class="n">a</span><span class="p">,</span> <span class="kt">int</span> <span class="o">*</span> <span class="n">b</span><span class="p">)</span> <span class="p">{</span>
+    <span class="o">*</span><span class="n">a</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
+    <span class="o">*</span><span class="n">b</span> <span class="o">=</span> <span class="mi">6</span><span class="p">;</span>
+    <span class="k">return</span> <span class="p">(</span><span class="o">*</span><span class="n">a</span> <span class="o">+</span> <span class="o">*</span><span class="n">b</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div><p>If you examine the below assembly instructions, you see that we don&rsquo;t necessarily need the third instruction. However, it has its purpose. Let&rsquo;s take a scenario when both a and b points to the same value. In that case, if you don&rsquo;t run the third instruction, which is re-reading the value of variable a, you will get an incorrect result (11 instead of 12). Because, b = 6 statement will change the previous value at the location. However, you can tell the compiler that these variables will never point to the same Lvalue, using <strong>restrict</strong> keyword.</p>
+<div class="highlight"><pre class="chroma"><code class="language-asm" data-lang="asm"><span class="nl">change_and_add:</span>
+        <span class="nf">mov</span>     <span class="no">DWORD</span> <span class="no">PTR</span> <span class="p">[</span><span class="no">rdi</span><span class="p">],</span> <span class="mi">5</span>
+        <span class="nf">mov</span>     <span class="no">DWORD</span> <span class="no">PTR</span> <span class="p">[</span><span class="no">rsi</span><span class="p">],</span> <span class="mi">6</span>
+        <span class="nf">mov</span>     <span class="no">eax</span><span class="p">,</span> <span class="no">DWORD</span> <span class="no">PTR</span> <span class="p">[</span><span class="no">rdi</span><span class="p">]</span>
+        <span class="nf">add</span>     <span class="no">eax</span><span class="p">,</span> <span class="mi">6</span>
+        <span class="nf">ret</span>
+</code></pre></div><p>Let&rsquo;s see the same example with the <strong>restrict</strong> keyword. Look at the assembly instruction it is not re-reading the value of a because we have told the compiler that they&rsquo;ll always point to different Lvalue. This information helped the compiler in dependency analysis.</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="kt">int</span> <span class="nf">change_and_add</span><span class="p">(</span><span class="kt">int</span> <span class="o">*</span> <span class="kr">restrict</span> <span class="n">a</span><span class="p">,</span> <span class="kt">int</span> <span class="o">*</span> <span class="kr">restrict</span> <span class="n">b</span><span class="p">)</span> <span class="p">{</span>
+    <span class="o">*</span><span class="n">a</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
+    <span class="o">*</span><span class="n">b</span> <span class="o">=</span> <span class="mi">6</span><span class="p">;</span>
+    <span class="k">return</span> <span class="p">(</span><span class="o">*</span><span class="n">a</span> <span class="o">+</span> <span class="o">*</span><span class="n">b</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-asm" data-lang="asm"><span class="nl">change_and_add:</span>
+        <span class="nf">mov</span>     <span class="no">DWORD</span> <span class="no">PTR</span> <span class="p">[</span><span class="no">rdi</span><span class="p">],</span> <span class="mi">5</span>
+        <span class="nf">mov</span>     <span class="no">eax</span><span class="p">,</span> <span class="mi">11</span>
+        <span class="nf">mov</span>     <span class="no">DWORD</span> <span class="no">PTR</span> <span class="p">[</span><span class="no">rsi</span><span class="p">],</span> <span class="mi">6</span>
+        <span class="nf">ret</span>
+</code></pre></div><p>The difference between the two approaches increases with the increase in the number of arguments. However, this performance benefit comes with a caveat, though. Let&rsquo;s suppose if we pass the same Lvalue in the second example. According to C specification, it is undefined behavior because compiler assumption fails.</p>
+<p>This circle backs to our original discussion, what should we choose: maintainability or performance. There is a slight chance that a new member of your team will know about this arcane keyword, and they might make a mistake, which will introduce hard-to-debug bugs. All in all, I would say choose the performance if you have benchmarked your code. And don&rsquo;t forget to document the interface to minimize the damage.</p>
+<p><em>Please note: Generally, simple and maintainable code is performant as well. If you have not already watched Sean Parent&rsquo;s talk (<a href="https://youtu.be/qH6sSOr-yk8),">https://youtu.be/qH6sSOr-yk8),</a> then do yourself a favor and watch it right now.</em></p>
+        
+      </div>
+      <div class="paginator">
+        
+        <a class="link" href="https://rajatbajpai.com/post/api_design_with_performance/">← prev</a>
+        
+        
+        <a></a>
+        
+      </div>
+      <div class="comment">
+        
+        
+        
+        
+      </div>
+      
+    </main>
+    <footer id="footer">
+  <div>
+    <span>© 2021</span>
+    
+  </div>
+
+  <div>
+    <span>Powered by </span>
+    <a class="link" href="https://gohugo.io/">Hugo</a>
+  </div>
+
+  <div class="footnote">
+    <span>Follow me on <a class=link href=https://github.com/rajdroid>GitHub</a>, <a class=link href=https://twitter.com/rajatbajpai94>Twitter</a> or <a class=link href=/index.xml>RSS</a> | <a class=link href=https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh target=_blank rel=noopener>CC BY-NC-SA 4.0</a></span>
+  </div>
+</footer>
+
+  </div>
+  
+
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-283714875', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QRJ11VDZCS"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-QRJ11VDZCS');
+</script>
+
+</body>
+
+</html>
