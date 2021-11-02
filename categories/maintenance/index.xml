@@ -14,7 +14,7 @@
       
       <guid>https://rajatbajpai.com/post/perf_vs_maintenance/</guid>
       
-      <description>&lt;p&gt;&lt;img src=&#34;https://rajatbajpai.com/img/perf_vs_maintenance_header.jpg&#34; alt=&#34;Banner&#34;&gt;&lt;/p&gt;
+      <description>&lt;p&gt;&lt;img src=&#34;https://rajatbajpai.com/img/perf_vs_maintenance.png&#34; alt=&#34;Banner&#34;&gt;&lt;/p&gt;
 &lt;p&gt;I have a question for you. What is more important in software development: maintainability or performance? I don&amp;rsquo;t know about you, but I would always lean towards maintainability. However, under some rare circumstances, performance is crucial as well, for example, a fast path of a server, database queries, simulator runtime, etc. I believe most software can get away with maintainability without writing arcane performant code. In these cases, where a minute gain can be instrumental, we can do some things to improve the performance of the applications.&lt;/p&gt;
 &lt;p&gt;Today, I am going to discuss one such scenario in C language. You might say it is an arcane feature. Heck, even I didn&amp;rsquo;t know about it a few years back. That being said, I still believe 99% of system engineers using C language don&amp;rsquo;t need this. But it is always good to know stuff even if you don&amp;rsquo;t need it at the moment.&lt;/p&gt;
 &lt;p&gt;Coming back to the topic of this article. What would you say if I told you that you are executing more assembly instructions than you need to while passing a pointer to a function? You might say I have gone cuckoo-bananas. But allow me to explain before being so judgemental. Let the empirical results guide us.&lt;/p&gt;
