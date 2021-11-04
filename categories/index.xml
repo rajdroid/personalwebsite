@@ -6,7 +6,18 @@
     <description>Recent content in Categories on Rajat Bajpai</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Tue, 26 Oct 2021 21:45:26 +0530</lastBuildDate><atom:link href="https://rajatbajpai.com/categories/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 04 Nov 2021 20:42:55 +0530</lastBuildDate><atom:link href="https://rajatbajpai.com/categories/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>software engineering</title>
+      <link>https://rajatbajpai.com/categories/software-engineering/</link>
+      <pubDate>Thu, 04 Nov 2021 20:42:55 +0530</pubDate>
+      
+      <guid>https://rajatbajpai.com/categories/software-engineering/</guid>
+      
+      <description></description>
+      
+    </item>
+    
     <item>
       <title>C</title>
       <link>https://rajatbajpai.com/categories/c/</link>
@@ -101,17 +112,6 @@
       <pubDate>Fri, 13 Aug 2021 00:00:00 +0530</pubDate>
       
       <guid>https://rajatbajpai.com/categories/compilers/</guid>
-      
-      <description></description>
-      
-    </item>
-    
-    <item>
-      <title>Software Engineering</title>
-      <link>https://rajatbajpai.com/categories/software-engineering/</link>
-      <pubDate>Fri, 13 Aug 2021 00:00:00 +0530</pubDate>
-      
-      <guid>https://rajatbajpai.com/categories/software-engineering/</guid>
       
       <description></description>
       

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>programming on Rajat Bajpai</title>
+    <link>https://rajatbajpai.com/tags/programming/</link>
+    <description>Recent content in programming on Rajat Bajpai</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Thu, 04 Nov 2021 20:42:55 +0530</lastBuildDate><atom:link href="https://rajatbajpai.com/tags/programming/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>What is an ideal ratio between maintenance and enhancement tasks?</title>
+      <link>https://rajatbajpai.com/post/maintenance_vs_enhancement/</link>
+      <pubDate>Thu, 04 Nov 2021 20:42:55 +0530</pubDate>
+      
+      <guid>https://rajatbajpai.com/post/maintenance_vs_enhancement/</guid>
+      
+      <description>&lt;p&gt;&lt;img src=&#34;https://rajatbajpai.com/img/maintenance_vs_enhancement_banner.png&#34; alt=&#34;maintenance versus enhancement banner image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;Lately, I have been pondering about the right balance between maintenance tasks and enhancements. Why have I been thinking about this topic? Well, to understand that, you first need to hear the backstory.&lt;/p&gt;
+&lt;p&gt;Recently, one of my friends changed organization, and his reason for the change was that he wasn’t doing any new or thought-provoking work. Now, he is happy to find the work he longed for in another organization. While talking to him about the new team, he mentioned they mostly do enhancements, and there is less focus on maintenance. Personally, I find this situation to be a little concerning as well. The reason is you’ll inevitably accrue unnecessary stuff. I believe there should be a balance between maintenance tasks and enhancements as your project grows. However, there is no single ratio that’ll suffice for every project and team.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://rajatbajpai.com/img/division_graph.png&#34; alt=&#34;Effort division graph&#34;&gt;
+Coming back to our original question, is there a good ratio for every project? The answer is not straightforward, but I believe there it is. My enough rumination about this topic gave birth to three categories.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Young&lt;br&gt;
+These projects have an age of fewer than ten years. And for these projects, the ratio should be around 30/70, means 30% of maintenance tasks and 70% of enhancements. The reason for this division is that young projects have to deal with less legacy baggage. There will be a less need for maintenance in your early years if you have proficient software engineers.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Mature&lt;br&gt;
+These projects have an age of between ten to fifteen years. For these projects, the ratio should be around 50/50. The reason for this division is like the previous category. As you grow older, you need to contemplate the previous design decisions that might not hold under current circumstances or requirements.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Old&lt;br&gt;
+These projects have an age of over fifteen years. For these projects, the ratio should be around 60/40. This age accrues a lot of historical baggage, for example, programming language version.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;On further thinking, I believe these ratios only based on the age of a project are not complete. In addition, I think the headcount of a team also affects these divisions because the rate of contribution is directly proportional to team size. The major philosophy here is that less code leaves less room for errors.&lt;/p&gt;
+&lt;p&gt;Anyhow, based on the team size, we can have three categories:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Small&lt;br&gt;
+These teams have a size of less than 50.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Medium&lt;br&gt;
+These teams have a size between 50 to 150.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Large&lt;br&gt;
+These teams have a size of over 150.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Let’s take a hypothetical mature project with a large team to understand the above division’s little better. In this scenario, we can adjust our ratio to be 55/45 because a large team size will move these ratios more towards the maintenance chart. With these two criteria, we can calculate the division of work for any project and team.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Please Note: There could be other criteria as well that might affect the work division. But, I haven’t been able to come up with those criteria yet. I will update the article if I think about something else.&lt;/em&gt;&lt;/p&gt;
+</description>
+      
+    </item>
+    
+  </channel>
+</rss>
+

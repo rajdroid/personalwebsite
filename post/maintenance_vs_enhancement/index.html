@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+
+<meta name="author" content="author">
+
+
+
+<meta name="description" content="An article to discuss, is there an ideal ratio between maintenance and enhancement tasks.">
+
+
+
+<link rel="icon" href="/favicon.ico">
+
+
+
+<meta name="keywords" content=" software engineer  personal blog  technical blog ">
+
+
+
+
+<script>
+  
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']],
+      processEscapes: true,
+      processEnvironments: true,
+    },
+    options: {
+      skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    }
+  };
+</script>
+
+<script async defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+
+
+
+
+<link rel="canonical" href="https://rajatbajpai.com/post/maintenance_vs_enhancement/">
+
+
+
+
+<title>What is an ideal ratio between maintenance and enhancement tasks? - Rajat Bajpai</title>
+
+
+
+<link media="screen" rel="stylesheet" href='https://rajatbajpai.com/css/common.css'>
+<link media="screen" rel="stylesheet" href='https://rajatbajpai.com/css/content.css'>
+<link media="screen" rel="stylesheet" href='https://rajatbajpai.com/css/highlight.css'>
+
+
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="What is an ideal ratio between maintenance and enhancement tasks?" />
+<meta name="twitter:description" content="Is there an ideal ratio between maintenance and enhancement tasks? The answer is not straightforward, but I believe there it is. My enough rumination about this topic gave birth to three categories." />
+
+
+  <link rel="stylesheet" href='https://rajatbajpai.com/css/single.css'>
+</head>
+
+<body>
+  <div id="wrapper">
+    <header id="header">
+  <h1>
+    <a href="https://rajatbajpai.com">Rajat Bajpai</a>
+  </h1>
+
+  <nav>
+    
+    <span class="nav-bar-item">
+      <a class="link" href="/">Post</a>
+    </span>
+    
+    <span class="nav-bar-item">
+      <a class="link" href="/post/">Archives</a>
+    </span>
+    
+    <span class="nav-bar-item">
+      <a class="link" href="/about/">About</a>
+    </span>
+    
+  </nav>
+</header>
+
+    <main id="main" class="post">
+      
+      
+      
+      <h1>What is an ideal ratio between maintenance and enhancement tasks?</h1>
+      
+      <div>
+        <b>Keywords: </b>
+        
+        <a class="link" href='https://rajatbajpai.com/tags/enhancement'>#enhancement</a>
+        
+        <a class="link" href='https://rajatbajpai.com/tags/programming'>#programming</a>
+        
+        <a class="link" href='https://rajatbajpai.com/tags/software-engineering'>#software engineering</a>
+        
+        <a class="link" href='https://rajatbajpai.com/tags/maintenance'>#maintenance</a>
+        
+      </div>
+      
+      <div class="content">
+        
+        <p><img src="/img/maintenance_vs_enhancement_banner.png" alt="maintenance versus enhancement banner image"></p>
+<p>Lately, I have been pondering about the right balance between maintenance tasks and enhancements. Why have I been thinking about this topic? Well, to understand that, you first need to hear the backstory.</p>
+<p>Recently, one of my friends changed organization, and his reason for the change was that he wasn’t doing any new or thought-provoking work. Now, he is happy to find the work he longed for in another organization. While talking to him about the new team, he mentioned they mostly do enhancements, and there is less focus on maintenance. Personally, I find this situation to be a little concerning as well. The reason is you’ll inevitably accrue unnecessary stuff. I believe there should be a balance between maintenance tasks and enhancements as your project grows. However, there is no single ratio that’ll suffice for every project and team.</p>
+<p><img src="/img/division_graph.png" alt="Effort division graph">
+Coming back to our original question, is there a good ratio for every project? The answer is not straightforward, but I believe there it is. My enough rumination about this topic gave birth to three categories.</p>
+<ol>
+<li>
+<p>Young<br>
+These projects have an age of fewer than ten years. And for these projects, the ratio should be around 30/70, means 30% of maintenance tasks and 70% of enhancements. The reason for this division is that young projects have to deal with less legacy baggage. There will be a less need for maintenance in your early years if you have proficient software engineers.</p>
+</li>
+<li>
+<p>Mature<br>
+These projects have an age of between ten to fifteen years. For these projects, the ratio should be around 50/50. The reason for this division is like the previous category. As you grow older, you need to contemplate the previous design decisions that might not hold under current circumstances or requirements.</p>
+</li>
+<li>
+<p>Old<br>
+These projects have an age of over fifteen years. For these projects, the ratio should be around 60/40. This age accrues a lot of historical baggage, for example, programming language version.</p>
+</li>
+</ol>
+<p>On further thinking, I believe these ratios only based on the age of a project are not complete. In addition, I think the headcount of a team also affects these divisions because the rate of contribution is directly proportional to team size. The major philosophy here is that less code leaves less room for errors.</p>
+<p>Anyhow, based on the team size, we can have three categories:</p>
+<ol>
+<li>
+<p>Small<br>
+These teams have a size of less than 50.</p>
+</li>
+<li>
+<p>Medium<br>
+These teams have a size between 50 to 150.</p>
+</li>
+<li>
+<p>Large<br>
+These teams have a size of over 150.</p>
+</li>
+</ol>
+<p>Let’s take a hypothetical mature project with a large team to understand the above division’s little better. In this scenario, we can adjust our ratio to be 55/45 because a large team size will move these ratios more towards the maintenance chart. With these two criteria, we can calculate the division of work for any project and team.</p>
+<p><em>Please Note: There could be other criteria as well that might affect the work division. But, I haven’t been able to come up with those criteria yet. I will update the article if I think about something else.</em></p>
+
+        
+      </div>
+      <div class="paginator">
+        
+        <a class="link" href="https://rajatbajpai.com/post/perf_vs_maintenance/">← prev</a>
+        
+        
+        <a></a>
+        
+      </div>
+      <div class="comment">
+        
+        
+        
+        
+      </div>
+      
+    </main>
+    <footer id="footer">
+  <div>
+    <span>© 2021</span>
+    
+  </div>
+
+  <div>
+    <span>Powered by </span>
+    <a class="link" href="https://gohugo.io/">Hugo</a>
+  </div>
+
+  <div class="footnote">
+    <span>Follow me on <a class=link href=https://github.com/rajdroid>GitHub</a>, <a class=link href=https://twitter.com/rajatbajpai94>Twitter</a> or <a class=link href=/index.xml>RSS</a> | <a class=link href=https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh target=_blank rel=noopener>CC BY-NC-SA 4.0</a></span>
+  </div>
+</footer>
+
+  </div>
+  
+
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-283714875', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QRJ11VDZCS"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-QRJ11VDZCS');
+</script>
+
+</body>
+
+</html>
